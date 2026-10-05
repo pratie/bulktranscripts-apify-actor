@@ -8,12 +8,14 @@
             "type": "array",
             "description": "Videos, playlists or channels, one per line. Channel links can be @handles (https://www.youtube.com/@TED), /channel/ IDs or old /c/ and /user/ links. Playlists must be public or unlisted.",
             "editor": "stringList",
-            "prefill": ["https://www.youtube.com/watch?v=fNk_zzaMoSs"]
+            "prefill": [
+                "https://www.youtube.com/watch?v=fNk_zzaMoSs"
+            ]
         },
         "apiKey": {
             "title": "BulkTranscripts API key",
             "type": "string",
-            "description": "Your key from bulktranscripts.co. Sign in at https://bulktranscripts.co/app?tab=mcp and create one in under a minute: new accounts get 30 free transcripts. A license key from a credit pack also works here.",
+            "description": "Needed for your own videos, playlists and channels. Sign in at https://bulktranscripts.co/app?tab=mcp and create a key in under a minute: new accounts get 30 free transcripts. A license key from a credit pack also works. Leave it empty to try the example video for free.",
             "editor": "textfield",
             "isSecret": true
         },
@@ -39,5 +41,7 @@
             "default": false
         }
     },
-    "required": ["urls", "apiKey"]
+    "required": [
+        "urls"
+    ]
 }

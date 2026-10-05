@@ -11,6 +11,10 @@ Powered by [BulkTranscripts](https://bulktranscripts.co), the YouTube transcript
 - **Monitor channels on a schedule.** Run it daily with Apify Schedules; videos you already have are not charged again.
 - **Feed automations.** Connect the dataset to Make, Zapier, n8n, Google Sheets or a webhook with Apify integrations.
 
+## Try it without a key
+
+Click **Start** with the example input and leave the API key empty: the example video runs free, so you can see the output before signing up. Your own videos, playlists and channels need a key.
+
 ## How to use it
 
 1. **Get a BulkTranscripts API key.** Sign in at [bulktranscripts.co/app](https://bulktranscripts.co/app?tab=mcp) and create a key in the MCP & API tab. New accounts include **30 free transcripts**, no card needed.
@@ -24,7 +28,7 @@ Single videos come back in a second or two. Channels and playlists run as one jo
 | Field | What it does |
 |---|---|
 | `urls` | Videos, playlists and channels, one per line. |
-| `apiKey` | Your BulkTranscripts API key (or the license key from a credit pack). Stored as a secret. |
+| `apiKey` | Your BulkTranscripts API key (or the license key from a credit pack). Stored as a secret. Optional for the example video only. |
 | `maxVideos` | Most videos to take from each channel or playlist (1 to 1,000, default 50). Channels start with the newest uploads. |
 | `language` | Preferred caption language code, e.g. `en`, `es`, `de`. Falls back to the video's available captions. |
 | `includeSegments` | Add timestamped segments (start, duration, text) to each row. |

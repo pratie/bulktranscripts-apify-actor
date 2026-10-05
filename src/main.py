@@ -23,6 +23,14 @@ KEY_URL = "https://bulktranscripts.co/app?tab=mcp"
 PRICING_URL = "https://bulktranscripts.co/#pricing"
 USER_AGENT = "bulktranscripts-apify-actor/1.0"
 
+# Without an API key the Actor runs the example video only, through a key
+# that has zero credits and holds just that one transcript in its library:
+# it can read that video for free and nothing else (any other video is
+# out_of_credits). That keeps "Try for free" and Apify's daily test of the
+# default input working without handing out credits.
+DEMO_VIDEO = "fNk_zzaMoSs"
+DEMO_KEY = "BTAPIFYDEMO-5ED5FE-9085ED-6E3721"
+
 VIDEO_ID = re.compile(r"^[A-Za-z0-9_-]{11}$")
 PATH_VIDEO = re.compile(r"/(?:shorts|live|embed|v)/([A-Za-z0-9_-]{11})")
 
@@ -240,23 +248,30 @@ async def main() -> None:
         language = (actor_input.get("language") or "en").strip() or "en"
         include_segments = bool(actor_input.get("includeSegments"))
 
-        if not api_key:
-            await Actor.fail(status_message=(
-                "Add your BulkTranscripts API key. Create one free at %s (new accounts "
-                "include 30 transcripts)." % KEY_URL))
-            return
         if not urls:
             await Actor.fail(status_message="Add at least one YouTube video, playlist or channel URL.")
             return
+        demo = not api_key
+        if demo:
+            if any(video_id_of(u) != DEMO_VIDEO for u in urls):
+                await Actor.fail(status_message=(
+                    "Add your BulkTranscripts API key to fetch your own videos, playlists and "
+                    "channels. Create one free at %s (new accounts include 30 transcripts). "
+                    "Without a key only the example video runs." % KEY_URL))
+                return
+            Actor.log.info("No API key: running the example video. Get a free key at %s "
+                           "for your own videos.", KEY_URL)
+            api_key = DEMO_KEY
 
         client = Client(api_key)
         delivered = 0
         seen_videos: set[str] = set()
         try:
-            account = await client.call("GET", "/account")
-            billing = account.get("billing") or account
-            Actor.log.info("BulkTranscripts account ready, %s credits available.",
-                           billing.get("remaining", "unknown"))
+            if not demo:
+                account = await client.call("GET", "/account")
+                billing = account.get("billing") or account
+                Actor.log.info("BulkTranscripts account ready, %s credits available.",
+                               billing.get("remaining", "unknown"))
             for index, source in enumerate(urls, 1):
                 await Actor.set_status_message("Source %d of %d: %s" % (index, len(urls), source))
                 video = video_id_of(source)
@@ -284,5 +299,7 @@ async def main() -> None:
         finally:
             await client.close()
 
-        await Actor.exit(status_message="Done: %d transcript%s saved to the dataset." % (
-            delivered, "" if delivered == 1 else "s"))
+        done = "Done: %d transcript%s saved to the dataset." % (delivered, "" if delivered == 1 else "s")
+        if demo:
+            done += " Add a free API key from %s to run your own videos." % KEY_URL
+        await Actor.exit(status_message=done)
