@@ -1,0 +1,18 @@
+{
+    "actorSpecification": 1,
+    "name": "youtube-transcripts-bulk",
+    "title": "YouTube Transcripts in Bulk: Channels, Playlists & Videos",
+    "description": "Get clean transcripts for a whole YouTube channel or playlist (up to 1,000 videos per source), or for single videos. Text, paragraphs and optional timestamps, one dataset row per video. Powered by BulkTranscripts.",
+    "version": "1.0",
+    "buildTag": "latest",
+    "defaultRunOptions": {
+        "build": "latest",
+        "memoryMbytes": 256,
+        "timeoutSecs": 7200
+    },
+    "input": "./input_schema.json",
+    "dockerfile": "./Dockerfile",
+    "storages": {
+        "dataset": "./dataset_schema.json"
+    }
+}

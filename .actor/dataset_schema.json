@@ -1,0 +1,26 @@
+{
+    "actorSpecification": 1,
+    "fields": {},
+    "views": {
+        "overview": {
+            "title": "Transcripts",
+            "transformation": {
+                "fields": ["title", "channel", "url", "status", "language", "wordCount", "durationSeconds", "uploadDate", "transcript"]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "title": {"label": "Title", "format": "text"},
+                    "channel": {"label": "Channel", "format": "text"},
+                    "url": {"label": "Video", "format": "link"},
+                    "status": {"label": "Status", "format": "text"},
+                    "language": {"label": "Language", "format": "text"},
+                    "wordCount": {"label": "Words", "format": "number"},
+                    "durationSeconds": {"label": "Duration (s)", "format": "number"},
+                    "uploadDate": {"label": "Uploaded", "format": "text"},
+                    "transcript": {"label": "Transcript", "format": "text"}
+                }
+            }
+        }
+    }
+}

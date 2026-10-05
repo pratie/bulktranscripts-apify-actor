@@ -1,0 +1,43 @@
+{
+    "title": "YouTube Transcripts in Bulk",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "urls": {
+            "title": "YouTube URLs",
+            "type": "array",
+            "description": "Videos, playlists or channels, one per line. Channel links can be @handles (https://www.youtube.com/@TED), /channel/ IDs or old /c/ and /user/ links. Playlists must be public or unlisted.",
+            "editor": "stringList",
+            "prefill": ["https://www.youtube.com/watch?v=fNk_zzaMoSs"]
+        },
+        "apiKey": {
+            "title": "BulkTranscripts API key",
+            "type": "string",
+            "description": "Your key from bulktranscripts.co. Sign in at https://bulktranscripts.co/app?tab=mcp and create one in under a minute: new accounts get 30 free transcripts. A license key from a credit pack also works here.",
+            "editor": "textfield",
+            "isSecret": true
+        },
+        "maxVideos": {
+            "title": "Max videos per channel or playlist",
+            "type": "integer",
+            "description": "Newest videos first for channels. Each new transcript uses one BulkTranscripts credit; videos already in your library are free.",
+            "default": 50,
+            "minimum": 1,
+            "maximum": 1000
+        },
+        "language": {
+            "title": "Preferred caption language",
+            "type": "string",
+            "description": "Language code such as en, es, de or pt. If a video has no captions in this language, its available captions are used.",
+            "editor": "textfield",
+            "default": "en"
+        },
+        "includeSegments": {
+            "title": "Include timestamped segments",
+            "type": "boolean",
+            "description": "Adds a segments array (start time, duration, text) to every row. Leave off if you only need the text.",
+            "default": false
+        }
+    },
+    "required": ["urls", "apiKey"]
+}
