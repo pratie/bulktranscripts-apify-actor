@@ -1,0 +1,12 @@
+{
+    "actorOutputSchemaVersion": 1,
+    "title": "YouTube transcripts",
+    "properties": {
+        "overview": {
+            "type": "string",
+            "title": "Transcripts",
+            "description": "One row per video: title, channel, URL, status, language, word count, duration, upload date and the full transcript.",
+            "template": "{{links.apiDefaultDatasetUrl}}/items?view=overview"
+        }
+    }
+}
