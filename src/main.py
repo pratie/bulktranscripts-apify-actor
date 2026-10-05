@@ -284,4 +284,5 @@ async def main() -> None:
         finally:
             await client.close()
 
-        await Actor.exit(status_message="Done: %d transcripts saved to the dataset." % delivered)
+        await Actor.exit(status_message="Done: %d transcript%s saved to the dataset." % (
+            delivered, "" if delivered == 1 else "s"))
