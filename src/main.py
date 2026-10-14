@@ -2,9 +2,10 @@
 
 Single videos go to GET /api/v1/transcript. Channels and playlists start a
 bulk job (POST /api/v1/bulk), which BulkTranscripts runs on its own servers;
-the Actor waits for it, pages through the outcomes, and reads each finished
-transcript back. Those reads are free, because a bulk job puts every video in
-the caller's library first. One dataset row per video.
+the Actor waits for it, then pages through the outcomes with the transcript
+text included (include=text, 25 per page). Those reads are free, because a
+bulk job puts every video in the caller's library first. One dataset row per
+video.
 
 Credits are the caller's own: the run uses the BulkTranscripts API key from
 the input, so a transcript costs one credit the first time and nothing after.
@@ -190,12 +191,18 @@ async def run_video(client: Client, video: str, source: str, language: str,
 
 
 async def run_bulk(client: Client, source: str, max_videos: int, language: str,
-                   include_segments: bool) -> int:
+                   include_segments: bool, content: str = "videos", start_at: int = 1) -> int:
     """Start a bulk job for a channel or playlist, wait for it, then read
-    every finished transcript back from the library (free)."""
+    every finished transcript back from the library (free). `content` picks a
+    channel's Videos, Shorts or Live tab; `start_at` skips to a later block of
+    a channel or playlist bigger than one 1,000-video job."""
+    payload = {"url": source, "max_videos": max_videos, "language": language}
+    if content in ("shorts", "live"):
+        payload["content"] = content
+    if start_at > 1:
+        payload["start_at"] = start_at
     try:
-        job = await client.call("POST", "/bulk", json={
-            "url": source, "max_videos": max_videos, "language": language})
+        job = await client.call("POST", "/bulk", json=payload)
     except ApiFailure as exc:
         if exc.status == 401:
             raise
@@ -216,13 +223,18 @@ async def run_bulk(client: Client, source: str, max_videos: int, language: str,
     delivered = 0
     cursor = None
     while True:
-        params = {"limit": 100}
+        # include=text returns finished transcripts 25 at a time, so a
+        # 1,000-video job reads back in 40 calls instead of 1,000.
+        params = {"limit": 25, "include": "text,segments" if include_segments else "text"}
         if cursor is not None:
             params["cursor"] = cursor
         page = await client.call("GET", "/bulk/%s/results" % run_id, params=params)
+        rows = []
         for item in page.get("items") or []:
             vid = item.get("video_id")
-            if item.get("status") in HAS_TRANSCRIPT and vid:
+            if item.get("status") in HAS_TRANSCRIPT and vid and "text" in item:
+                rows.append(transcript_row(item, source, include_segments))
+            elif item.get("status") in HAS_TRANSCRIPT and vid:
                 delivered += await run_video(client, vid, source, language, include_segments)
             else:
                 error = item.get("error") or {}
@@ -230,6 +242,10 @@ async def run_bulk(client: Client, source: str, max_videos: int, language: str,
                     vid, source, item.get("status") or "unknown",
                     error.get("message") if isinstance(error, dict) else None,
                     title=item.get("title"), url=item.get("url")))
+        if rows:
+            await Actor.push_data(rows)
+            delivered += len(rows)
+            await Actor.set_status_message("%s: %d transcripts saved" % (title, delivered))
         cursor = page.get("next_cursor")
         if cursor is None:
             break
@@ -247,6 +263,8 @@ async def main() -> None:
         max_videos = max(1, min(int(actor_input.get("maxVideos") or 50), 1000))
         language = (actor_input.get("language") or "en").strip() or "en"
         include_segments = bool(actor_input.get("includeSegments"))
+        content = actor_input.get("channelContent") or "videos"
+        start_at = max(1, int(actor_input.get("startAt") or 1))
 
         if not urls:
             await Actor.fail(status_message="Add at least one YouTube video, playlist or channel URL.")
@@ -281,7 +299,8 @@ async def main() -> None:
                     seen_videos.add(video)
                     delivered += await run_video(client, video, source, language, include_segments)
                 else:
-                    delivered += await run_bulk(client, source, max_videos, language, include_segments)
+                    delivered += await run_bulk(client, source, max_videos, language, include_segments,
+                                                content, start_at)
         except OutOfCredits as exc:
             message = ("Out of BulkTranscripts credits after %d transcripts. %s Add credits at %s "
                        "and run again: videos already fetched are free." % (delivered, exc, PRICING_URL))

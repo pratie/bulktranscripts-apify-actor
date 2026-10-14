@@ -1,9 +1,9 @@
 {
     "actorSpecification": 1,
     "name": "youtube-transcripts-bulk",
-    "title": "YouTube Transcripts in Bulk: Channels, Playlists & Videos",
-    "description": "Get clean transcripts for a whole YouTube channel or playlist (up to 1,000 videos per source), or for single videos. Text, paragraphs and optional timestamps, one dataset row per video. Powered by BulkTranscripts.",
-    "version": "1.0",
+    "title": "YouTube Channel Transcripts: Download All Videos in Bulk",
+    "description": "Download all transcripts from a YouTube channel or playlist: up to 1,000 videos per run in about 7 minutes, plus Shorts and live streams. Text, paragraphs and timestamps, one row per video.",
+    "version": "1.1",
     "buildTag": "latest",
     "defaultRunOptions": {
         "build": "latest",

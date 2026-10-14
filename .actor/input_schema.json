@@ -27,6 +27,31 @@
             "minimum": 1,
             "maximum": 1000
         },
+        "channelContent": {
+            "title": "Channel content",
+            "type": "string",
+            "description": "Which tab of a channel to read: regular Videos, Shorts, or Live (past live streams). Ignored for playlists and single videos.",
+            "editor": "select",
+            "enum": [
+                "videos",
+                "shorts",
+                "live"
+            ],
+            "enumTitles": [
+                "Videos",
+                "Shorts",
+                "Live streams"
+            ],
+            "default": "videos"
+        },
+        "startAt": {
+            "title": "Start at video #",
+            "type": "integer",
+            "description": "1 is the newest video. For channels with more than 1,000 videos, run in blocks: 1, then 1001, then 2001. Videos you already have are free.",
+            "default": 1,
+            "minimum": 1,
+            "maximum": 100000
+        },
         "language": {
             "title": "Preferred caption language",
             "type": "string",
