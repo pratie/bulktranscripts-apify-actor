@@ -11,7 +11,7 @@ Powered by [BulkTranscripts](https://bulktranscripts.co), the YouTube transcript
 - **Playlists:** `https://www.youtube.com/playlist?list=…` (public or unlisted)
 - **Single videos:** `https://www.youtube.com/watch?v=…`, `youtu.be/…`, `/shorts/…`
 - **Speed:** a 1,000-video channel takes about 7 minutes to extract on BulkTranscripts' servers (about 2 new videos per second), then about a minute to save to the dataset
-- **Cost:** the Actor is free on Apify; transcripts use your BulkTranscripts credits: 30 free, then $4.99 for 200. Videos you already have are free to fetch again.
+- **Cost:** the Actor is free on Apify; transcripts use your BulkTranscripts credits: 30 free, then $9.99 for 200. Videos you already have are free to fetch again.
 
 ## How to download every transcript from a YouTube channel
 
@@ -96,7 +96,7 @@ From BulkTranscripts' production database, last 30 days to 14 October 2026:
 
 The Actor itself is free to run on Apify; a run uses very little compute because the extraction happens on BulkTranscripts' servers.
 
-Transcripts use **BulkTranscripts credits**: one credit per new transcript. Videos already in your BulkTranscripts library are free to fetch again, forever, in any format. Every account starts with 30 free credits; packs are $4.99 for 200, $14.99 for 1,200 (enough for a 1,000-video channel) and $29 for 5,000, and never expire. See [bulktranscripts.co/#pricing](https://bulktranscripts.co/#pricing).
+Transcripts use **BulkTranscripts credits**: one credit per new transcript. Videos already in your BulkTranscripts library are free to fetch again, forever, in any format. Every account starts with 30 free credits; packs are $9.99 for 200, $14.99 for 1,200 (enough for a 1,000-video channel) and $29 for 5,000, and never expire. See [bulktranscripts.co/#pricing](https://bulktranscripts.co/#pricing).
 
 If your balance runs out mid-run, the Actor saves everything fetched so far and stops with a message; add credits and run again, and the videos you already have cost nothing.
 
